@@ -24,6 +24,7 @@ import {
   addDangerToast,
   toastActions,
 } from 'src/components/MessageToasts/actions';
+import { updateDataMask } from 'src/dataMask/actions';
 import { Slice } from 'src/types/Chart';
 import { SaveActionType } from 'src/explore/types';
 
@@ -164,6 +165,7 @@ export const exploreActions = {
   createNewSlice,
   sliceUpdated,
   setForceQuery,
+  updateDataMask,
 };
 
 export type ExploreActions = typeof exploreActions;
