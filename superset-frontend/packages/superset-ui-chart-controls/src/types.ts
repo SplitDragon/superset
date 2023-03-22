@@ -89,6 +89,7 @@ export interface ControlPanelState {
   controls: ControlStateMapping;
   common: JsonObject;
   metadata?: JsonObject | null;
+  dataMask: JsonObject;
 }
 
 /**

@@ -45,6 +45,7 @@ export type EchartsPieFormData = QueryFormData &
     numberFormat: string;
     dateFormat: string;
     showLabelsThreshold: number;
+    drillDown: boolean;
   };
 
 export enum EchartsPieLabelType {
@@ -77,6 +78,7 @@ export const DEFAULT_FORM_DATA: EchartsPieFormData = {
   labelsOutside: true,
   showLabelsThreshold: 5,
   dateFormat: 'smart_date',
+  drillDown: false,
 };
 
 export type PieChartTransformedProps =

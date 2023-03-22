@@ -26,6 +26,7 @@ import {
   PlainObject,
   QueryFormColumn,
   SetDataMaskHook,
+  JsonObject,
 } from '@superset-ui/core';
 import { EChartsCoreOption, ECharts } from 'echarts';
 import { TooltipMarker } from 'echarts/types/src/util/format';
@@ -131,6 +132,7 @@ export interface BaseTransformedProps<F> {
   refs: Refs;
   width: number;
   emitCrossFilters?: boolean;
+  ownState?: JsonObject;
 }
 
 export type CrossFilterTransformedProps = {

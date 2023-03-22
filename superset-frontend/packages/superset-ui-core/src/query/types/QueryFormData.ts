@@ -139,6 +139,14 @@ export type ExtraFormDataOverride = ExtraFormDataOverrideRegular &
 
 export type ExtraFormData = ExtraFormDataAppend & ExtraFormDataOverride;
 
+export type DrillDownType = {
+  hierarchy: string[];
+  currentIdx: number;
+  filters: QueryObjectFilterClause[];
+}
+
+export type OwnState = JsonObject & { drilldown: DrillDownType; }
+
 // Type signature for formData shared by all viz types
 // It will be gradually filled out as we build out the query object
 
