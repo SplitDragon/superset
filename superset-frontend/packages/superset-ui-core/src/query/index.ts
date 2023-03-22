@@ -30,6 +30,7 @@ export { default as DatasourceKey } from './DatasourceKey';
 export { default as normalizeOrderBy } from './normalizeOrderBy';
 export { normalizeTimeColumn } from './normalizeTimeColumn';
 export { default as extractQueryFields } from './extractQueryFields';
+export { default as DrillDown } from './DrillDown';
 export * from './getXAxis';
 
 export * from './types/AnnotationLayer';
