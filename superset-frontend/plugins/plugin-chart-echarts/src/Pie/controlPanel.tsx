@@ -30,6 +30,7 @@ import {
 } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
 import { legendSection } from '../controls';
+import { isFeatureEnabled, FeatureFlag } from 'src/featureFlags';
 
 const {
   donut,
@@ -62,7 +63,7 @@ const config: ControlPanelConfig = {
               chartId: form_data?.slice_id || 0,
               columns: form_data.groupby,
             }),
-          }
+          },
         }] : [],
         ['metric'],
         ['adhoc_filters'],

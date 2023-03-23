@@ -154,7 +154,7 @@ export default function transformProps(
   const {
     colorScheme,
     donut,
-    groupby: hierarchyOrColumns,
+    groupby: QueryFormColumn[],
     innerRadius,
     labelsOutside,
     labelLine,
@@ -181,7 +181,10 @@ export default function transformProps(
   const metricLabel = getMetricLabel(metric);
   const groupbyLabels = groupby.map(getColumnLabel);
   const minShowLabelAngle = (showLabelsThreshold || 0) * 3.6;
-  const groupby = drillDown && ownState?.drilldown ? [DrillDown.getColumn(ownState.drilldown)] : hierarchyOrColumns;
+
+  if (!groupby && drillDown && ownState?.drilldown) {
+    groupby = [DrillDown.getColumn(ownState.drilldown, groupby)];
+  }
 
   const keys = data.map(datum =>
     extractGroupbyLabel({

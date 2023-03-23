@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, QueryFormData, DrillDown } from '@superset-ui/core';
+import { buildQueryContext, QueryFormData, DrillDown, JsonObject } from '@superset-ui/core';
 
-export default function buildQuery(formData: QueryFormData, { ownState }) {
+export default function buildQuery(formData: QueryFormData, { ownState: JsonObject }) {
   const { metric, sort_by_metric, drillDown, groupby } = formData;
   return buildQueryContext(formData, baseQueryObject => [
     {
