@@ -20,14 +20,14 @@ import React from 'react';
 import ControlHeader from 'src/explore/components/ControlHeader';
 import { ExploreActions } from 'src/explore/actions/exploreActions';
 import Checkbox from 'src/components/Checkbox';
-import { DrillDown, JsonObject } from '@superset-ui/core';
+import { DrillDown, QueryFormColumn } from '@superset-ui/core';
 
 type drillDownProps = {
   value: boolean;
   onChange: (value: boolean) => void;
   label?: string;
   chartId: string;
-  columns: string[];
+  columns: QueryFormColumn;
   actions: ExploreActions;
 };
 
@@ -40,7 +40,7 @@ export default function DrillDownControl(props: drillDownProps) {
       const { drilldown } = DrillDown.fromHierarchy(props.columns);
       props.actions.updateDataMask(chartId, { ownState: { drilldown } });
     } else {
-      props.actions.updateDataMask(chartId, { ownState: JsonObject });
+      props.actions.updateDataMask(chartId, {});
     }
     props.onChange(!props.value);
   };

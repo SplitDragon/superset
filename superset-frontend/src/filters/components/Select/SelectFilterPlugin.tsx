@@ -28,7 +28,6 @@ import {
   getColumnLabel,
   JsonObject,
   OwnState,
-  DrillDownType,
   smartDateDetailedFormatter,
   t,
   tn,
@@ -46,7 +45,7 @@ import { FilterPluginStyle, StatusMessage, StyledFormItem } from '../common';
 import { getDataRecordFormatter, getSelectExtraFormData } from '../../utils';
 
 type DataMaskAction =
-  | { type: 'ownState'; ownState: JsonObject }
+  | { type: 'ownState'; ownState: OwnState }
   | {
       type: 'filterState';
       __cache: JsonObject;
@@ -55,7 +54,7 @@ type DataMaskAction =
     };
 
 function reducer(
-  draft: (DataMask & { __cache?: JsonObject }) | OwnState | DrillDownType,
+  draft: (DataMask & { __cache?: JsonObject }) | undefined | null,
   action: DataMaskAction,
 ) {
   switch (action.type) {

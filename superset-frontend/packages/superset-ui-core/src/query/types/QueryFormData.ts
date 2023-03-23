@@ -147,7 +147,7 @@ export type DrillDownType = {
   };
 };
 
-export type OwnState = JsonObject | DrillDownType | undefined | null;
+export type OwnState = DrillDownType | JsonObject | undefined;
 
 // Type signature for formData shared by all viz types
 // It will be gradually filled out as we build out the query object

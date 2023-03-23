@@ -16,71 +16,71 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { OwnState } from '@superset-ui/core';
-import {
-  QueryObjectFilterClause,
-  QueryFormColumn,
-} from './types';
+import { OwnState, JsonObject } from '@superset-ui/core';
+import { QueryObjectFilterClause, QueryFormColumn } from './types';
 import { ensureIsArray } from '../utils';
 
 export default class DrillDown {
   static fromHierarchy(hierarchy: QueryFormColumn): OwnState {
-    hierarchy = ensureIsArray(hierarchy);
+    const arrHierarchy = ensureIsArray(hierarchy);
     return {
       drilldown: {
-        ...hierarchy,
+        hierarchy: arrHierarchy,
         currentIdx: hierarchy.length > 0 ? 0 : -1,
         filters: [],
       },
-    }
+    };
   }
 
   static drillDown(value: OwnState, selectValue: string): OwnState {
-    const idx = value.currentIdx;
-    const len = value.hierarchy.length;
+    const val = value.dropdown;
+    const idx = val.currentIdx;
+    const len = val.hierarchy.length;
 
     if (idx + 1 >= len) {
       return {
         drilldown: {
-          hierarchy: value.hierarchy,
+          hierarchy: val.hierarchy,
           currentIdx: 0,
-          filters: [],
+          filters: val.filters.concat({
+            op: 'IS NOT NULL',
+          }),
         },
-      };
+      }
     }
     return {
       drilldown: {
-        hierarchy: value.hierarchy,
+        hierarchy: val.hierarchy,
         currentIdx: idx + 1,
-        filters: value.filters.concat({
-          col: value.hierarchy[idx],
+        filters: val.filters.concat({
+          col: val.hierarchy[idx],
           op: 'IN',
           val: [selectValue],
         }),
       },
-    };
+    }
   }
 
   static rollUp(value: OwnState): OwnState {
-    const idx = value.currentIdx;
-    const len = value.hierarchy.length;
+    const val = value.dropdown;
+    const idx = val.currentIdx;
+    const len = val.hierarchy.length;
     return {
       drilldown: {
-        hierarchy: value.hierarchy,
+        hierarchy: val.hierarchy,
         currentIdx: idx - 1 < 0 ? len - 1 : idx - 1,
-        filters: value.filters.slice(0, -1),
+        filters: val.filters.slice(0, -1),
       },
     };
   }
 
-  static getColumn(
-    value: OwnState,
-    hierarchy: QueryFormColumn,
-  ): OwnState {
+  static getColumn(value: OwnState): OwnState {
+    let val: JsonObject;
     if (value) {
-      return value.hierarchy[value.currentIdx];
+      val = value.dropdown;
+    } else {
+      val = DrillDown.fromHierarchy([]);
     }
-    const val = DrillDown.fromHierarchy(hierarchy);
     return val.hierarchy[val.currentIdx];
   }
 
@@ -88,10 +88,12 @@ export default class DrillDown {
     value: OwnState,
     hierarchy: QueryFormColumn,
   ): QueryObjectFilterClause {
+    let val: JsonObject;
     if (value) {
-      return value.filters;
+      val = value.dropdown;
+    } else {
+      val = DrillDown.fromHierarchy(...hierarchy);
     }
-    const val = DrillDown.fromHierarchy(...hierarchy);
     return val.filters;
   }
 }

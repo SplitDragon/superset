@@ -22,7 +22,6 @@ import {
   DataMask,
   QueryFormColumn,
   DrillDown,
-  DrillDownType,
   JsonObject,
   OwnState,
 } from '@superset-ui/core';
@@ -58,7 +57,7 @@ const getCrossFilterDataMask =
     let dataMask: DataMask;
 
     if (formData?.drillDown) {
-      const { drilldown } = DrillDown.drillDown(value: ownState, selectValue: values[0]);
+      const { drilldown } = DrillDown.drillDown({ value: ownState, selectValue: values[0] });
       dataMask = {
         extraFormData: {
           filters: drilldown.filters,

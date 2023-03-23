@@ -177,14 +177,15 @@ export default function transformProps(
     ...DEFAULT_PIE_FORM_DATA,
     ...formData,
   };
+  if (drillDown && ownState?.drilldown) {
+    const arrGroupby = [DrillDown.getColumn({ value: ownState.drilldown, hierarchy: groupby })];
+  } else {
+    const arrGroupby = groupby;
+  }
   const refs: Refs = {};
   const metricLabel = getMetricLabel(metric);
-  const groupbyLabels = groupby.map(getColumnLabel);
+  const groupbyLabels = arrGroupby.map(getColumnLabel);
   const minShowLabelAngle = (showLabelsThreshold || 0) * 3.6;
-
-  if (!groupby && drillDown && ownState?.drilldown) {
-    const groupby = [DrillDown.getColumn(value: ownState.drilldown, hierarchy: groupby)];
-  }
 
   const keys = data.map(datum =>
     extractGroupbyLabel({
