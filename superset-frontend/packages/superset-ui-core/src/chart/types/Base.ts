@@ -17,7 +17,11 @@
  * under the License.
  */
 
-import { BinaryQueryObjectFilterClause, ExtraFormData, OwnState } from '../../query';
+import {
+  BinaryQueryObjectFilterClause,
+  ExtraFormData,
+  OwnState,
+} from '../../query';
 
 export type HandlerFunction = (...args: unknown[]) => void;
 

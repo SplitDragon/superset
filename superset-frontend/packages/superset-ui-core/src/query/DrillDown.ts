@@ -4,73 +4,79 @@
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
+ * 'License'); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryObjectFilterClause, DrillDownType } from "./types";
-import { ensureIsArray } from "../utils";
+import { JsonObject } from '@superset-ui/core';
+import {
+  QueryObjectFilterClause,
+  QueryFormColumn,
+  DrillDownType
+} from './types';
+import { ensureIsArray } from '../utils';
 
 export default class DrillDown {
-  static fromHierarchy(
-    hierarchy: string[]
-  ): DrillDownType {
-    const _hierarchy = ensureIsArray(hierarchy)
+  static fromHierarchy(hierarchy: QueryFormColumn[]): DrillDownType {
+    hierarchy = ensureIsArray(hierarchy);
     return {
-      hierarchy: _hierarchy,
-      currentIdx: _hierarchy.length > 0 ? 0 : -1,
-      filters: [],
+      drilldown: {
+        { hierarchy },
+        currentIdx: hierarchy.length > 0 ? 0 : -1,
+        filters: [],
+      },
     };
   }
 
-  static drillDown(
-    value: DrillDownType,
-    selectValue: string,
-  ): DrillDownType {
+  static drillDown(value: DrillDownType, selectValue: string): DrillDownType {
     const idx = value.currentIdx;
     const len = value.hierarchy.length;
 
     if (idx + 1 >= len) {
       return {
-        hierarchy: value.hierarchy,
-        currentIdx: 0,
-        filters: [],
-      }
+        drilldown: {
+          hierarchy: value.hierarchy,
+          currentIdx: 0,
+          filters: [],
+        },
+      };
     }
     return {
-      hierarchy: value.hierarchy,
-      currentIdx: idx + 1,
-      filters: value.filters.concat({
-        col: value.hierarchy[idx],
-        op: 'IN',
-        val: [selectValue],
-      })
-    }
+      drilldown: {
+        hierarchy: value.hierarchy,
+        currentIdx: idx + 1,
+        filters: value.filters.concat({
+          col: value.hierarchy[idx],
+          op: 'IN',
+          val: [selectValue],
+        }),
+      },
+    };
   }
 
-  static rollUp(
-    value: DrillDownType,
-  ): DrillDownType {
+  static rollUp(value: DrillDownType): DrillDownType {
     const idx = value.currentIdx;
     const len = value.hierarchy.length;
     return {
-      hierarchy: value.hierarchy,
-      currentIdx: idx - 1 < 0 ? len - 1 : idx - 1,
-      filters: value.filters.slice(0, -1),
-    }
+      drilldown: {
+        hierarchy: value.hierarchy,
+        currentIdx: idx - 1 < 0 ? len - 1 : idx - 1,
+        filters: value.filters.slice(0, -1),
+      },
+    };
   }
 
   static getColumn(
-    value: DrillDownType | undefined | null,
-    hierarchy: string[],
+    value: DrillDownType | JsonObject,
+    hierarchy: QueryFormColumn[],
   ): string {
     if (value) {
       return value.hierarchy[value.currentIdx];
@@ -80,8 +86,8 @@ export default class DrillDown {
   }
 
   static getFilters(
-    value: DrillDownType | undefined | null,
-    hierarchy: string[],
+    value: DrillDownType | JsonObject,
+    hierarchy: QueryFormColumn[],
   ): QueryObjectFilterClause[] {
     if (value) {
       return value.filters;

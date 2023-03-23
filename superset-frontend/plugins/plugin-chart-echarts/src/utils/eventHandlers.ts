@@ -22,6 +22,7 @@ import {
   DataMask,
   QueryFormColumn,
   DrillDown,
+  DrillDownType,
   JsonObject,
 } from '@superset-ui/core';
 import {
@@ -41,7 +42,7 @@ const getCrossFilterDataMask =
     groupby: QueryFormColumn[],
     labelMap: Record<string, string[]>,
     formData?: JsonObject,
-    ownState?: JsonObject,
+    ownState?: DrillDownType,
   ) =>
   (value: string) => {
     const selected = Object.values(selectedValues);
@@ -56,7 +57,7 @@ const getCrossFilterDataMask =
     let dataMask: DataMask;
 
     if (formData?.drillDown) {
-      const drilldown = DrillDown.drillDown(ownState?.drilldown, values[0]);
+      const { drilldown } = DrillDown.drillDown(ownState, values[0]);
       dataMask = {
         extraFormData: {
           filters: drilldown.filters,
@@ -64,9 +65,7 @@ const getCrossFilterDataMask =
         filterState: {
           value: groupbyValues.length && drilldown.filters.length > 0 ? groupbyValues : null,
         },
-        ownState: {
-          drilldown: drilldown,
-        }
+        ownState: { drilldown },
       };
     } else {
       dataMask = {
@@ -75,18 +74,18 @@ const getCrossFilterDataMask =
             values.length === 0
               ? []
               : groupby.map((col, idx) => {
-                  const val = groupbyValues.map(v => v[idx]);
-                  if (val === null || val === undefined)
-                    return {
-                      col,
-                      op: 'IS NULL' as const,
-                    };
+                const val = groupbyValues.map(v => v[idx]);
+                if (val === null || val === undefined)
                   return {
                     col,
-                    op: 'IN' as const,
-                    val: val as (string | number | boolean)[],
+                    op: 'IS NULL' as const,
                   };
-                }),
+                return {
+                  col,
+                  op: 'IN' as const,
+                  val: val as (string | number | boolean)[],
+                };
+              }),
         },
         filterState: {
           value: groupbyValues.length ? groupbyValues : null,
@@ -96,7 +95,7 @@ const getCrossFilterDataMask =
     }
 
     return {
-      dataMask: dataMask,
+      { dataMask },
       isCurrentValueSelected: selected.includes(value),
     };
   };
@@ -168,7 +167,13 @@ export const allEventHandlers = (
   } = transformedProps;
   const eventHandlers: EventHandlers = {
     click: clickEventHandler(
-      getCrossFilterDataMask(selectedValues, groupby, labelMap, formData, ownState),
+      getCrossFilterDataMask(
+        selectedValues,
+        groupby,
+        labelMap,
+        formData,
+        ownState,
+      ),
       setDataMask,
       emitCrossFilters,
       formData,
@@ -177,7 +182,13 @@ export const allEventHandlers = (
       groupby,
       onContextMenu,
       labelMap,
-      getCrossFilterDataMask(selectedValues, groupby, labelMap, formData, ownState),
+      getCrossFilterDataMask(
+        selectedValues,
+        groupby,
+        labelMap,
+        formData,
+        ownState,
+      ),
     ),
   };
   return eventHandlers;
