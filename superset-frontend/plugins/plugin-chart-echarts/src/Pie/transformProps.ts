@@ -154,7 +154,7 @@ export default function transformProps(
   const {
     colorScheme,
     donut,
-    groupby: QueryFormColumn[],
+    groupby,
     innerRadius,
     labelsOutside,
     labelLine,

@@ -37,7 +37,7 @@ export default function DrillDownControl(props: drillDownProps) {
   const onChange = () => {
     const chartId = props.chartId.toString();
     if (!props.value) {
-      const drilldown = DrillDown.fromHierarchy(props.columns).drilldown;
+      const { drilldown } = DrillDown.fromHierarchy(props.columns);
       props.actions.updateDataMask(chartId, { ownState: { drilldown } });
     } else {
       props.actions.updateDataMask(chartId, { ownState: DrillDownType });
@@ -46,11 +46,7 @@ export default function DrillDownControl(props: drillDownProps) {
   };
 
   const renderCheckbox = () => (
-    <Checkbox
-      onChange={onChange}
-      style={checkboxStyle}
-      checked={props.value}
-    />
+    <Checkbox onChange={onChange} style={checkboxStyle} checked={props.value} />
   );
 
   if (props.label) {

@@ -57,7 +57,7 @@ const getCrossFilterDataMask =
     let dataMask: DataMask;
 
     if (formData?.drillDown) {
-      const drilldown = DrillDown.drillDown(ownState?, values[0]).drilldown;
+      const { drilldown } = DrillDown.drillDown(ownState, values[0]);
       dataMask = {
         extraFormData: {
           filters: drilldown.filters,

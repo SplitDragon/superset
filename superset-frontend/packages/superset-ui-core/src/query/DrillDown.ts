@@ -17,27 +17,26 @@
  * under the License.
  */
 import { JsonObject } from '@superset-ui/core';
-import { QueryObjectFilterClause, QueryFormColumn, DrillDownType } from './types';
+import {
+  QueryObjectFilterClause,
+  QueryFormColumn,
+  DrillDownType
+} from './types';
 import { ensureIsArray } from '../utils';
 
 export default class DrillDown {
-  static fromHierarchy(
-    hierarchy: QueryFormColumn[],
-  ): DrillDownType {
+  static fromHierarchy(hierarchy: QueryFormColumn[]): DrillDownType {
     hierarchy = ensureIsArray(hierarchy);
     return {
       drilldown: {
-        hierarchy: hierarchy,
+        { hierarchy },
         currentIdx: hierarchy.length > 0 ? 0 : -1,
         filters: [],
-      }
+      },
     };
   }
 
-  static drillDown(
-    value: DrillDownType,
-    selectValue: string,
-  ): DrillDownType {
+  static drillDown(value: DrillDownType, selectValue: string): DrillDownType {
     const idx = value.currentIdx;
     const len = value.hierarchy.length;
 
@@ -47,7 +46,7 @@ export default class DrillDown {
           hierarchy: value.hierarchy,
           currentIdx: 0,
           filters: [],
-        }
+        },
       };
     }
     return {
@@ -59,13 +58,11 @@ export default class DrillDown {
           op: 'IN',
           val: [selectValue],
         }),
-      }
+      },
     };
   }
 
-  static rollUp(
-    value: DrillDownType,
-  ): DrillDownType {
+  static rollUp(value: DrillDownType): DrillDownType {
     const idx = value.currentIdx;
     const len = value.hierarchy.length;
     return {
@@ -73,7 +70,7 @@ export default class DrillDown {
         hierarchy: value.hierarchy,
         currentIdx: idx - 1 < 0 ? len - 1 : idx - 1,
         filters: value.filters.slice(0, -1),
-      }
+      },
     };
   }
 
