@@ -20,12 +20,12 @@ import {
   buildQueryContext,
   QueryFormData,
   DrillDown,
-  DrillDownType,
+  OwnState,
 } from '@superset-ui/core';
 
 export default function buildQuery(
   formData: QueryFormData,
-  { ownState: DrillDownType },
+  { ownState: OwnState },
 ) {
   const { metric, sort_by_metric, drillDown, groupby } = formData;
   return buildQueryContext(formData, baseQueryObject => [
@@ -33,10 +33,10 @@ export default function buildQuery(
       ...baseQueryObject,
       ...(sort_by_metric && { orderby: [[metric, false]] }),
       ...(drillDown && {
-        groupby: [DrillDown.getColumn(ownState.drilldown, groupby)],
+        groupby: [DrillDown.getColumn(value: ownState.drilldown, hierarchy: groupby)],
         filters: [
-          ...baseQueryObject.filters || [],
-          ...DrillDown.getFilters(ownState.drilldown, groupby)
+          ...(baseQueryObject.filters || []),
+          ...DrillDown.getFilters(value: ownState.drilldown, hierarchy: groupby),
         ],
       }),
     },

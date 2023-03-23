@@ -36,14 +36,6 @@ export enum Behavior {
   DRILL_TO_DETAIL = 'DRILL_TO_DETAIL',
 }
 
-export interface ContextMenuFilters {
-  crossFilter?: {
-    dataMask: DataMask;
-    isCurrentValueSelected?: boolean;
-  };
-  drillToDetail?: BinaryQueryObjectFilterClause[];
-}
-
 export enum AppSection {
   EXPLORE = 'EXPLORE',
   DASHBOARD = 'DASHBOARD',
@@ -63,6 +55,14 @@ export type DataMask = {
 export type SetDataMaskHook = {
   ({ filterState, extraFormData, ownState }: DataMask): void;
 };
+
+export interface ContextMenuFilters {
+  crossFilter?: {
+    dataMask: DataMask;
+    isCurrentValueSelected?: boolean;
+  };
+  drillToDetail?: BinaryQueryObjectFilterClause[];
+}
 
 export interface PlainObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

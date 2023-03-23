@@ -16,27 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { JsonObject } from '@superset-ui/core';
+import { OwnState } from '@superset-ui/core';
 import {
   QueryObjectFilterClause,
   QueryFormColumn,
-  DrillDownType
 } from './types';
 import { ensureIsArray } from '../utils';
 
 export default class DrillDown {
-  static fromHierarchy(hierarchy: QueryFormColumn[]): DrillDownType {
+  static fromHierarchy(hierarchy: QueryFormColumn): OwnState {
     hierarchy = ensureIsArray(hierarchy);
     return {
       drilldown: {
-        { hierarchy },
+        ...hierarchy,
         currentIdx: hierarchy.length > 0 ? 0 : -1,
         filters: [],
       },
-    };
+    }
   }
 
-  static drillDown(value: DrillDownType, selectValue: string): DrillDownType {
+  static drillDown(value: OwnState, selectValue: string): OwnState {
     const idx = value.currentIdx;
     const len = value.hierarchy.length;
 
@@ -62,7 +61,7 @@ export default class DrillDown {
     };
   }
 
-  static rollUp(value: DrillDownType): DrillDownType {
+  static rollUp(value: OwnState): OwnState {
     const idx = value.currentIdx;
     const len = value.hierarchy.length;
     return {
@@ -75,9 +74,9 @@ export default class DrillDown {
   }
 
   static getColumn(
-    value: DrillDownType | JsonObject,
-    hierarchy: QueryFormColumn[],
-  ): string {
+    value: OwnState,
+    hierarchy: QueryFormColumn,
+  ): OwnState {
     if (value) {
       return value.hierarchy[value.currentIdx];
     }
@@ -86,13 +85,13 @@ export default class DrillDown {
   }
 
   static getFilters(
-    value: DrillDownType | JsonObject,
-    hierarchy: QueryFormColumn[],
-  ): QueryObjectFilterClause[] {
+    value: OwnState,
+    hierarchy: QueryFormColumn,
+  ): QueryObjectFilterClause {
     if (value) {
       return value.filters;
     }
-    const val = DrillDown.fromHierarchy(hierarchy);
+    const val = DrillDown.fromHierarchy(...hierarchy);
     return val.filters;
   }
 }

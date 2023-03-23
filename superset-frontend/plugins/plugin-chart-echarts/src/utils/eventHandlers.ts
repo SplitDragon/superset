@@ -24,6 +24,7 @@ import {
   DrillDown,
   DrillDownType,
   JsonObject,
+  OwnState,
 } from '@superset-ui/core';
 import {
   BaseTransformedProps,
@@ -42,7 +43,7 @@ const getCrossFilterDataMask =
     groupby: QueryFormColumn[],
     labelMap: Record<string, string[]>,
     formData?: JsonObject,
-    ownState?: DrillDownType,
+    ownState?: OwnState,
   ) =>
   (value: string) => {
     const selected = Object.values(selectedValues);
@@ -57,7 +58,7 @@ const getCrossFilterDataMask =
     let dataMask: DataMask;
 
     if (formData?.drillDown) {
-      const { drilldown } = DrillDown.drillDown(ownState, values[0]);
+      const { drilldown } = DrillDown.drillDown(value: ownState, selectValue: values[0]);
       dataMask = {
         extraFormData: {
           filters: drilldown.filters,
@@ -66,7 +67,7 @@ const getCrossFilterDataMask =
           value: groupbyValues.length && drilldown.filters.length > 0 ? groupbyValues : null,
         },
         ownState: { drilldown },
-      };
+      }
     } else {
       dataMask = {
         extraFormData: {
@@ -95,9 +96,9 @@ const getCrossFilterDataMask =
     }
 
     return {
-      { dataMask },
+      dataMask: dataMask,
       isCurrentValueSelected: selected.includes(value),
-    };
+    }
   };
 
 export const clickEventHandler =

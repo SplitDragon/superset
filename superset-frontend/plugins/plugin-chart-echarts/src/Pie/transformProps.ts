@@ -183,7 +183,7 @@ export default function transformProps(
   const minShowLabelAngle = (showLabelsThreshold || 0) * 3.6;
 
   if (!groupby && drillDown && ownState?.drilldown) {
-    groupby = [DrillDown.getColumn(ownState.drilldown, groupby)];
+    const groupby = [DrillDown.getColumn(value: ownState.drilldown, hierarchy: groupby)];
   }
 
   const keys = data.map(datum =>
