@@ -27,6 +27,8 @@ import {
   GenericDataType,
   getColumnLabel,
   JsonObject,
+  OwnState,
+  DrillDownType,
   smartDateDetailedFormatter,
   t,
   tn,
@@ -53,7 +55,7 @@ type DataMaskAction =
     };
 
 function reducer(
-  draft: DataMask & { __cache?: JsonObject },
+  draft: (DataMask & { __cache?: JsonObject }) | OwnState | DrillDownType,
   action: DataMaskAction,
 ) {
   switch (action.type) {

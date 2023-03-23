@@ -148,7 +148,7 @@ class Chart extends React.PureComponent {
       const drilldown = DrillDown.fromHierarchy(this.props.formData.groupby);
       this.props.actions.updateDataMask(
         this.props.chartId,
-        ownState: { drilldown },
+        { ownState: { drilldown } },
       );
     }
 
