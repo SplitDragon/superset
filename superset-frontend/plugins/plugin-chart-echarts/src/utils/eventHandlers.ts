@@ -57,16 +57,22 @@ const getCrossFilterDataMask =
     let dataMask: DataMask;
 
     if (formData?.drillDown) {
-      const { drilldown } = DrillDown.drillDown({ value: ownState, selectValue: values[0] });
+      const { drilldown } = DrillDown.drillDown(
+        ownState,
+        values[0],
+      );
       dataMask = {
         extraFormData: {
           filters: drilldown.filters,
         },
         filterState: {
-          value: groupbyValues.length && drilldown.filters.length > 0 ? groupbyValues : null,
+          value:
+            groupbyValues.length && drilldown.filters.length > 0
+              ? groupbyValues
+              : null,
         },
         ownState: { drilldown },
-      }
+      };
     } else {
       dataMask = {
         extraFormData: {
@@ -74,18 +80,18 @@ const getCrossFilterDataMask =
             values.length === 0
               ? []
               : groupby.map((col, idx) => {
-                const val = groupbyValues.map(v => v[idx]);
-                if (val === null || val === undefined)
+                  const val = groupbyValues.map(v => v[idx]);
+                  if (val === null || val === undefined)
+                    return {
+                      col,
+                      op: 'IS NULL' as const,
+                    };
                   return {
                     col,
-                    op: 'IS NULL' as const,
+                    op: 'IN' as const,
+                    val: val as (string | number | boolean)[],
                   };
-                return {
-                  col,
-                  op: 'IN' as const,
-                  val: val as (string | number | boolean)[],
-                };
-              }),
+                }),
         },
         filterState: {
           value: groupbyValues.length ? groupbyValues : null,
@@ -95,9 +101,9 @@ const getCrossFilterDataMask =
     }
 
     return {
-      dataMask: dataMask,
+      { dataMask },
       isCurrentValueSelected: selected.includes(value),
-    }
+    };
   };
 
 export const clickEventHandler =

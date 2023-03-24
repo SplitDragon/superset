@@ -54,7 +54,7 @@ type DataMaskAction =
     };
 
 function reducer(
-  draft: (DataMask & { __cache?: JsonObject }) | undefined | null,
+  draft: DataMask & { __cache?: JsonObject },
   action: DataMaskAction,
 ) {
   switch (action.type) {

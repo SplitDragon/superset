@@ -177,10 +177,16 @@ export default function transformProps(
     ...DEFAULT_PIE_FORM_DATA,
     ...formData,
   };
+  let arrGroupby: string[];
   if (drillDown && ownState?.drilldown) {
-    const arrGroupby = [DrillDown.getColumn({ value: ownState.drilldown, hierarchy: groupby })];
+    arrGroupby = [
+      DrillDown.getColumn(
+        ownState,
+        groupby
+      )
+    ];
   } else {
-    const arrGroupby = groupby;
+    arrGroupby = groupby;
   }
   const refs: Refs = {};
   const metricLabel = getMetricLabel(metric);

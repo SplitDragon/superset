@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { OwnState, JsonObject } from '@superset-ui/core';
-import { QueryObjectFilterClause, QueryFormColumn } from './types';
+import { DrillDownType, OwnState } from '@superset-ui/core';
+import { QueryObjectFilterClause } from './types';
 import { ensureIsArray } from '../utils';
 
 export default class DrillDown {
-  static fromHierarchy(hierarchy: QueryFormColumn): OwnState {
+  static fromHierarchy(hierarchy: string[]): DrillDownType {
     const arrHierarchy = ensureIsArray(hierarchy);
     return {
       drilldown: {
@@ -32,8 +32,12 @@ export default class DrillDown {
     };
   }
 
-  static drillDown(value: OwnState, selectValue: string): OwnState {
-    const val = value.dropdown;
+  static drillDown(value?: OwnState, selectValue: string): DrillDownType {
+    const val = value?.dropdown;
+    if (!val) {
+      return;
+    }
+
     const idx = val.currentIdx;
     const len = val.hierarchy.length;
 
@@ -46,7 +50,7 @@ export default class DrillDown {
             op: 'IS NOT NULL',
           }),
         },
-      }
+      };
     }
     return {
       drilldown: {
@@ -58,11 +62,15 @@ export default class DrillDown {
           val: [selectValue],
         }),
       },
-    }
+    };
   }
 
-  static rollUp(value: OwnState): OwnState {
-    const val = value.dropdown;
+  static rollUp(value?: OwnState): DrillDownType {
+    const val = value?.dropdown;
+    if (!val) {
+      return;
+    }
+
     const idx = val.currentIdx;
     const len = val.hierarchy.length;
     return {
@@ -74,25 +82,28 @@ export default class DrillDown {
     };
   }
 
-  static getColumn(value: OwnState): OwnState {
-    let val: JsonObject;
+  static getColumn(
+    value: OwnState,
+    hierarchy: string[],
+  ): string {
+    let val = null;
     if (value) {
       val = value.dropdown;
     } else {
-      val = DrillDown.fromHierarchy([]);
+      val = DrillDown.fromHierarchy(hierarchy);
     }
     return val.hierarchy[val.currentIdx];
   }
 
   static getFilters(
     value: OwnState,
-    hierarchy: QueryFormColumn,
+    hierarchy: string[],
   ): QueryObjectFilterClause {
-    let val: JsonObject;
+    let val = null;
     if (value) {
       val = value.dropdown;
     } else {
-      val = DrillDown.fromHierarchy(...hierarchy);
+      val = DrillDown.fromHierarchy(hierarchy);
     }
     return val.filters;
   }
