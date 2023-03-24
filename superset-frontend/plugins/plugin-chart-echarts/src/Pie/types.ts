@@ -16,7 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryFormColumn, QueryFormData } from '@superset-ui/core';
+import {
+  QueryFormColumn,
+  QueryFormData,
+  SetDataMaskHook,
+  DrillDownType,
+  JsonObject,
+} from '@superset-ui/core';
 import {
   BaseChartProps,
   BaseTransformedProps,
@@ -60,6 +66,7 @@ export enum EchartsPieLabelType {
 export interface EchartsPieChartProps
   extends BaseChartProps<EchartsPieFormData> {
   formData: EchartsPieFormData;
+  ownState: OwnState;
 }
 
 // @ts-ignore
@@ -81,7 +88,10 @@ export const DEFAULT_FORM_DATA: EchartsPieFormData = {
   drillDown: false,
 };
 
+export type OwnState = JsonObject & { drilldown: DrillDownType };
+
 export type PieChartTransformedProps =
   BaseTransformedProps<EchartsPieFormData> &
     ContextMenuTransformedProps &
-    CrossFilterTransformedProps;
+    CrossFilterTransformedProps &
+    EchartsPieChartProps;

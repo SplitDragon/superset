@@ -21,9 +21,7 @@ import {
   ContextMenuFilters,
   DataMask,
   QueryFormColumn,
-  DrillDown,
   JsonObject,
-  OwnState,
 } from '@superset-ui/core';
 import {
   BaseTransformedProps,
@@ -41,10 +39,8 @@ const getCrossFilterDataMask =
     selectedValues: Record<number, string>,
     groupby: QueryFormColumn[],
     labelMap: Record<string, string[]>,
-    formData?: JsonObject,
-    ownState?: OwnState,
   ) =>
-  JsonObject => {
+  (value: string) => {
     const selected = Object.values(selectedValues);
     let values: string[];
     if (selected.includes(value)) {
@@ -54,27 +50,9 @@ const getCrossFilterDataMask =
     }
 
     const groupbyValues = values.map(value => labelMap[value]);
-    let dataMask: DataMask;
 
-    if (formData?.drillDown) {
-      const { drilldown } = DrillDown.drillDown(
-        ownState,
-        values[0],
-      );
-      dataMask = {
-        extraFormData: {
-          filters: drilldown.filters,
-        },
-        filterState: {
-          value:
-            groupbyValues.length && drilldown.filters.length > 0
-              ? groupbyValues
-              : null,
-        },
-        ownState: drilldown,
-      };
-    } else {
-      dataMask = {
+    return {
+      dataMask: {
         extraFormData: {
           filters:
             values.length === 0
@@ -97,11 +75,7 @@ const getCrossFilterDataMask =
           value: groupbyValues.length ? groupbyValues : null,
           selectedValues: values.length ? values : null,
         },
-      };
-    }
-
-    return {
-      dataMask,
+      },
       isCurrentValueSelected: selected.includes(value),
     };
   };
@@ -109,17 +83,37 @@ const getCrossFilterDataMask =
 export const clickEventHandler =
   (
     getCrossFilterDataMask: (
-      value: JsonObject,
+      value: string,
     ) => ContextMenuFilters['crossFilter'],
     setDataMask: (dataMask: DataMask) => void,
     emitCrossFilters?: boolean,
-    formData?: JsonObject,
+    formData: F,
+    ownState?: JsonObject,
   ) =>
   ({ name }: { name: string }) => {
-    if (!emitCrossFilters && !formData?.drilldown) {
+    if (!emitCrossFilters && !formData.drillDown) {
       return;
     }
-    const dataMask = getCrossFilterDataMask(name)?.dataMask;
+
+    let dataMask = getCrossFilterDataMask(name)?.dataMask;
+
+    if (formData.drillDown && ownState?.drilldown) {
+      const drilldown = DrillDown.drillDown(ownState?.drilldown, values[0]);
+      dataMask = {
+        extraFormData: {
+          filters: drilldown.filters,
+        },
+        filterState: {
+          value:
+            groupbyValues.length && drilldown.filters.length > 0
+              ? groupbyValues
+              : null,
+        },
+        ownState: {
+          drilldown,
+        },
+      };
+    }
     if (dataMask) {
       setDataMask(dataMask);
     }
@@ -132,7 +126,7 @@ export const contextMenuEventHandler =
     onContextMenu: BaseTransformedProps<any>['onContextMenu'],
     labelMap: Record<string, string[]>,
     getCrossFilterDataMask: (
-      value: JsonObject,
+      value: string,
     ) => ContextMenuFilters['crossFilter'],
   ) =>
   (e: Event) => {
@@ -162,39 +156,28 @@ export const allEventHandlers = (
   transformedProps: BaseTransformedProps<any> & CrossFilterTransformedProps,
 ) => {
   const {
+    formData,
     groupby,
     onContextMenu,
     setDataMask,
     labelMap,
     emitCrossFilters,
     selectedValues,
-    formData,
     ownState,
   } = transformedProps;
   const eventHandlers: EventHandlers = {
     click: clickEventHandler(
-      getCrossFilterDataMask(
-        selectedValues,
-        groupby,
-        labelMap,
-        formData,
-        ownState,
-      ),
+      getCrossFilterDataMask(selectedValues, groupby, labelMap),
       setDataMask,
       emitCrossFilters,
       formData,
+      ownState,
     ),
     contextmenu: contextMenuEventHandler(
       groupby,
       onContextMenu,
       labelMap,
-      getCrossFilterDataMask(
-        selectedValues,
-        groupby,
-        labelMap,
-        formData,
-        ownState,
-      ),
+      getCrossFilterDataMask(selectedValues, groupby, labelMap),
     ),
   };
   return eventHandlers;

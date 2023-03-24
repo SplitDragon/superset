@@ -146,9 +146,9 @@ class Chart extends React.PureComponent {
   componentDidMount() {
     if (this.props.formData?.drillDown) {
       const drilldown = DrillDown.fromHierarchy(this.props.formData.groupby);
-      this.props.actions.updateDataMask({
-        filterId: this.props.chartId,
-        dataMask: { ownState: { drilldown } },
+      this.props.actions.updateDataMask(
+        this.props.chartId, {
+        ownState: { drilldown },
       });
     }
 
@@ -157,7 +157,15 @@ class Chart extends React.PureComponent {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
+    if (this.props.formData?.drillDown && !prevProps.formData?.drillDown) {
+      const drilldown = DrillDown.fromHierarchy(this.props.formData.groupby);
+      this.props.actions.updateDataMask(
+        this.props.chartId, {
+        ownState: { drilldown },
+      });
+    }
+
     if (this.props.triggerQuery) {
       this.runQuery();
     }

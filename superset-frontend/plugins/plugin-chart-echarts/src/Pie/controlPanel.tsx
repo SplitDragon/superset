@@ -17,7 +17,12 @@
  * under the License.
  */
 import React from 'react';
-import { ensureIsInt, t, validateNonEmpty } from '@superset-ui/core';
+import {
+  t,
+  validateNonEmpty,
+  FeatureFlag,
+  isFeatureEnabled,
+} from '@superset-ui/core';
 import {
   ControlPanelConfig,
   ControlPanelsContainerProps,
@@ -28,7 +33,6 @@ import {
   sections,
   getStandardizedControls,
 } from '@superset-ui/chart-controls';
-import { isFeatureEnabled, FeatureFlag } from 'src/featureFlags';
 import { DEFAULT_FORM_DATA } from './types';
 import { legendSection } from '../controls';
 

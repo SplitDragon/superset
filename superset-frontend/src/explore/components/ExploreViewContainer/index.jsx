@@ -760,7 +760,7 @@ function mapStateToProps(state) {
     force: !!explore.force,
     chart,
     timeout: common.conf.SUPERSET_WEBSERVER_TIMEOUT,
-    ownState: dataMask[form_data?.slice_id || 0]?.ownState,
+    ownState: dataMask[form_data?.slice_id || 0]?.ownState, // 0 - unsaved chart
     impressionId,
     user,
     exploreState: explore,

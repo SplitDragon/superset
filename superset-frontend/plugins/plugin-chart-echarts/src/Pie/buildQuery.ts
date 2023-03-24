@@ -20,25 +20,36 @@ import {
   buildQueryContext,
   QueryFormData,
   DrillDown,
-  OwnState,
+  QueryFormOrderBy,
 } from '@superset-ui/core';
+import { OwnState } from './types';
 
-export default function buildQuery(
-  formData: QueryFormData,
-  ownState: OwnState,
-) {
-  const { metric, sort_by_metric, drillDown, groupby } = formData;
-  return buildQueryContext(formData, baseQueryObject => [
-    {
+export default function buildQuery(formData: QueryFormData, options: any) {
+  const { metric, sort_by_metric, drillDown } = formData;
+
+  return buildQueryContext(formData, baseQueryObject => {
+    let queryObject = {
       ...baseQueryObject,
-      ...(sort_by_metric && { orderby: [[metric, false]] }),
-      ...(drillDown && {
-        groupby: [DrillDown.getColumn(ownState, groupby)],
-        filters: [
-          ...(baseQueryObject.filters || []),
-          ...DrillDown.getFilters(ownState, groupby),
-        ],
-      }),
-    },
-  ]);
+      ...(sort_by_metric && { orderby: [<QueryFormOrderBy>[metric, false]] }),
+    };
+
+    if (drillDown) {
+      const groupby = <string[]>formData.groupby;
+      const ownState = <OwnState>options.ownState || {
+        drilldown: DrillDown.fromHierarchy(groupby),
+      };
+      queryObject = {
+        ...queryObject,
+        ...(drillDown && {
+          groupby: [DrillDown.getColumn(ownState.drilldown, groupby)],
+          filters: [
+            ...(baseQueryObject.filters || []),
+            ...DrillDown.getFilters(ownState.drilldown, groupby),
+          ],
+        }),
+      };
+    }
+
+    return [queryObject];
+  });
 }

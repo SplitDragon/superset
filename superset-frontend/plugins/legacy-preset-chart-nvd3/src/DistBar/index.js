@@ -21,6 +21,7 @@ import {
   ChartMetadata,
   ChartPlugin,
   hasGenericChartAxes,
+  DrillDown,
 } from '@superset-ui/core';
 import transformProps from '../transformProps';
 import thumbnail from './images/thumbnail.png';
@@ -63,7 +64,22 @@ export default class DistBarChartPlugin extends ChartPlugin {
     super({
       loadChart: () => import('../ReactNVD3'),
       metadata,
-      transformProps,
+      transformProps: chartProps => {
+        const outProps = chartProps;
+        const { drillDown } = chartProps.formData;
+        if (drillDown) {
+          outProps.ownState = {
+            ...(!chartProps.ownState.drilldown && {
+              drilldown: DrillDown.fromHierarchy(chartProps.formData.groupby),
+            }),
+            ...chartProps.ownState,
+          };
+          outProps.formData.groupby = [
+            DrillDown.getColumn(chartProps.ownState.drilldown, []),
+          ];
+        }
+        return transformProps(outProps);
+      },
       controlPanel,
     });
   }
