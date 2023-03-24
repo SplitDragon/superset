@@ -44,7 +44,7 @@ const getCrossFilterDataMask =
     formData?: JsonObject,
     ownState?: OwnState,
   ) =>
-  (value: string) => {
+  JsonObject => {
     const selected = Object.values(selectedValues);
     let values: string[];
     if (selected.includes(value)) {
@@ -71,7 +71,7 @@ const getCrossFilterDataMask =
               ? groupbyValues
               : null,
         },
-        ownState: { drilldown },
+        ownState: drilldown,
       };
     } else {
       dataMask = {
@@ -101,7 +101,7 @@ const getCrossFilterDataMask =
     }
 
     return {
-      { dataMask },
+      dataMask,
       isCurrentValueSelected: selected.includes(value),
     };
   };
@@ -109,7 +109,7 @@ const getCrossFilterDataMask =
 export const clickEventHandler =
   (
     getCrossFilterDataMask: (
-      value: string,
+      value: JsonObject,
     ) => ContextMenuFilters['crossFilter'],
     setDataMask: (dataMask: DataMask) => void,
     emitCrossFilters?: boolean,
@@ -132,7 +132,7 @@ export const contextMenuEventHandler =
     onContextMenu: BaseTransformedProps<any>['onContextMenu'],
     labelMap: Record<string, string[]>,
     getCrossFilterDataMask: (
-      value: string,
+      value: JsonObject,
     ) => ContextMenuFilters['crossFilter'],
   ) =>
   (e: Event) => {

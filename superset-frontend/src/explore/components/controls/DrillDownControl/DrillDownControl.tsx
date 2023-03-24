@@ -20,14 +20,14 @@ import React from 'react';
 import ControlHeader from 'src/explore/components/ControlHeader';
 import { ExploreActions } from 'src/explore/actions/exploreActions';
 import Checkbox from 'src/components/Checkbox';
-import { DrillDown, QueryFormColumn } from '@superset-ui/core';
+import { DrillDown } from '@superset-ui/core';
 
 type drillDownProps = {
   value: boolean;
   onChange: (value: boolean) => void;
   label?: string;
   chartId: string;
-  columns: QueryFormColumn;
+  columns: string[];
   actions: ExploreActions;
 };
 

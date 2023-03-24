@@ -33,16 +33,10 @@ export default function buildQuery(
       ...baseQueryObject,
       ...(sort_by_metric && { orderby: [[metric, false]] }),
       ...(drillDown && {
-        groupby: [DrillDown.getColumn(
-          ownState,
-          groupby
-        )],
+        groupby: [DrillDown.getColumn(ownState, groupby)],
         filters: [
           ...(baseQueryObject.filters || []),
-          ...DrillDown.getFilters(
-            ownState,
-            groupby
-          ),
+          ...DrillDown.getFilters(ownState, groupby),
         ],
       }),
     },

@@ -141,11 +141,11 @@ export type ExtraFormData = ExtraFormDataAppend & ExtraFormDataOverride;
 
 export type DrillDownType = {
   drilldown: {
-    hierarchy: QueryFormColumn;
+    hierarchy: string[];
     currentIdx: number;
-    filters: QueryObjectFilterClause;
+    filters: string[];
   };
-};
+} | {};
 
 export type OwnState = DrillDownType | JsonObject | undefined;
 

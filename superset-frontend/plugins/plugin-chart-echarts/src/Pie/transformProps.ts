@@ -179,12 +179,7 @@ export default function transformProps(
   };
   let arrGroupby: string[];
   if (drillDown && ownState?.drilldown) {
-    arrGroupby = [
-      DrillDown.getColumn(
-        ownState,
-        groupby
-      )
-    ];
+    arrGroupby = [DrillDown.getColumn(ownState, groupby)];
   } else {
     arrGroupby = groupby;
   }

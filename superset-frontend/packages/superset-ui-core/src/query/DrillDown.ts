@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { DrillDownType, OwnState } from '@superset-ui/core';
+import { DrillDownType } from '@superset-ui/core';
 import { QueryObjectFilterClause } from './types';
 import { ensureIsArray } from '../utils';
 
@@ -32,12 +32,8 @@ export default class DrillDown {
     };
   }
 
-  static drillDown(value?: OwnState, selectValue: string): DrillDownType {
-    const val = value?.dropdown;
-    if (!val) {
-      return;
-    }
-
+  static drillDown(value: DrillDownType, selectValue: string): DrillDownType {
+    const val = value.dropdown;
     const idx = val.currentIdx;
     const len = val.hierarchy.length;
 
@@ -65,12 +61,8 @@ export default class DrillDown {
     };
   }
 
-  static rollUp(value?: OwnState): DrillDownType {
-    const val = value?.dropdown;
-    if (!val) {
-      return;
-    }
-
+  static rollUp(value: DrillDownType): DrillDownType {
+    const val = value.dropdown;
     const idx = val.currentIdx;
     const len = val.hierarchy.length;
     return {
@@ -82,10 +74,7 @@ export default class DrillDown {
     };
   }
 
-  static getColumn(
-    value: OwnState,
-    hierarchy: string[],
-  ): string {
+  static getColumn(value: DrillDownType, hierarchy: string[]): string {
     let val = null;
     if (value) {
       val = value.dropdown;
@@ -96,7 +85,7 @@ export default class DrillDown {
   }
 
   static getFilters(
-    value: OwnState,
+    value: DrillDownType,
     hierarchy: string[],
   ): QueryObjectFilterClause {
     let val = null;
